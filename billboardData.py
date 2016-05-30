@@ -31,17 +31,31 @@ def pull_song_data(page_source):
 		lineNumber += 1
 	return songList
 
-satList = []
-for sat in allSaturdays(1995):
-	satList.append(sat)
+#Gets the year for user input and returns a list of every Saturday for that year.	
+def getYear():
+	year = 0
+	year = input("Please enter a year: ")
+	satList = []
+	for sat in allSaturdays(year):
+		satList.append(sat)
+	return satList
 
-for sat in satList:
-	print sat
+#gets the chart for the specified week	
+def getWeekChart(date):
+	response = urllib2.urlopen(make_url(str(date)))
+	page_source = response.read().split('\n')
+	weekList = pull_song_data(page_source)
+	return weekList
 
-response = urllib2.urlopen(make_url("1995-01-28"))
-page_source = response.read().split('\n')
-weekList = pull_song_data(page_source)
-songCount = 0
-for song in weekList:
-	songCount += 1
-	print str(songCount) + ": " + song
+#prints the chart for the specified week
+def printChart(chartList):
+	songPosition = 1
+	print "Position #\tSong"
+	for song in chartList:
+		print str(songPosition) + "\t" + song
+		songPosition += 1
+
+yearList = getYear()
+
+printChart(getWeekChart(yearList[0]))
+print "\n" + str(yearList[0])
